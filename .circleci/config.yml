@@ -1,0 +1,41 @@
+version: 2.1
+
+jobs: # a basic unit of work in a run
+  build: 
+    macos:
+      xcode: 15.0.0 # indicate your selected version of Xcode
+    steps: 
+      - checkout
+      - run:
+         name: install brew
+         command:  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
+      - run:
+          name: install cmake
+          command: brew install cmake
+      - run:
+          name: pwd
+          command: pwd
+      - run:
+          name: unpack lib
+          command: cd libaaio; tar -xzf libaaio-0.3.1.tar.bz2 && cd libaaio-0.3.1 && ./configure; sudo make install
+      - run:
+          name: go back to project
+          command: cd ~/project
+      - run:
+          name: run build
+          command: mkdir build; cd build;
+      - run:
+          name: run hacky tooling
+          command: cd build; python ../run_make.py
+      - run:
+          name: zip the files
+          command: tar -czf CDP8.tgz NewRelease
+      
+      - store_artifacts: # store this build output. Read more: https://circleci.com/docs/2.0/artifacts/
+          path: CDP8.tgz
+          destination: CDP8.tgz
+          
+workflows:
+  build:
+    jobs:
+      - build
