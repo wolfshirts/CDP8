@@ -2,12 +2,12 @@ if(APPLE)
 # -mmacosx-version-min=10.9
   set(CMAKE_C_FLAGS "-O2 -Wall  -Dunix  -DMAC -DPA_USE_COREAUDIO  -fomit-frame-pointer -funroll-loops")
   set(CMAKE_CXX_FLAGS "-O2 -Wall  -Dunix -DMAC -DPA_USE_COREAUDIO -fomit-frame-pointer -mmacosx-version-min=10.9 -funroll-loops -std=c++11 -stdlib=libc++")
-  include_directories ( /Developer/Headers/FlatCarbon )
+  include_directories ( /Developer/Headers/FlatCarbon ${BREW_PORTAUDIO}/include)
   find_library(COREAUDIOLIB CoreAudio)
   find_library(AUDIOTOOLBOX AudioToolbox)
   find_library(AULIB AudioUnit)
   find_library(CARBONLIB Carbon)
-  link_directories (/usr/local/lib)
+  link_directories (/usr/local/lib ${BREW_PORTAUDIO}/lib)
   find_library(PA NAMES libportaudio.a)
   find_library(AAIOLIB NAMES libaaio.a)
   set(EXTRA_LIBRARIES1 pthread ${AAIOLIB} ${PA} ${COREAUDIOLIB} ${AUDIOTOOLBOX} ${AULIB} ${CARBONLIB} ${EXTRA_LIBRARIES})
@@ -30,9 +30,9 @@ endif()
 # ../portaudio/lib/.libs
 link_directories( ../../lib  ../../../newsfsys ../../../pvxio2)
 # need /usr/local/include here?
-include_directories(/usr/local/include ../../../newinclude ../include ../portaudio/include ../portaudio/src/common)
+include_directories(${COMMON_DIR} /usr/local/include ../../../newinclude ../include ../portaudio/include ../portaudio/src/common)
 #../portaudio/src/common/pa_ringbuffer.c
-add_executable(pvplay pvplay.cpp pvoc2.cpp fmhfuncs.c pvthreads.cpp mxfft.c)
+add_executable(pvplay pvplay.cpp pvoc2.cpp fmhfuncs.c pvthreads.cpp mxfft.c ${COMMON_DIR}/pa_ringbuffer.c)
 target_link_libraries(pvplay sfsys pvxio2 ${EXTRA_LIBRARIES1})
 
 my_install(pvplay)
