@@ -13,6 +13,9 @@ jobs: # a basic unit of work in a run
           name: install cmake
           command: brew install cmake
       - run:
+          name: install portaudio
+          command: brew install portaudio
+      - run:
           name: pwd
           command: pwd
       - run:
